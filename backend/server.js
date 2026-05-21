@@ -22,6 +22,7 @@ connectDB();
 // Security middleware
 app.use(helmet());
 app.use(mongoSanitize());
+app.set('trust proxy', 1);
 
 const normalizeOrigin = (origin) => origin?.replace(/\/$/, '');
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
