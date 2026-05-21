@@ -1,4 +1,9 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_ROOT =
+  process.env.NEXT_PUBLIC_API_URL || 'https://bckendtaskmanager.onrender.com';
+const NORMALIZED_API_ROOT = API_ROOT.replace(/\/$/, '');
+const BASE_URL = NORMALIZED_API_ROOT.endsWith('/api/v1')
+  ? NORMALIZED_API_ROOT
+  : `${NORMALIZED_API_ROOT}/api/v1`;
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
