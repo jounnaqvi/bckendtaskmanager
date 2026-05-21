@@ -23,9 +23,21 @@ connectDB();
 app.use(helmet());
 app.use(mongoSanitize());
 
+const normalizeOrigin = (origin) => origin?.replace(/\/$/, '');
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+  .split(',')
+  .map((origin) => normalizeOrigin(origin.trim()))
+  .filter(Boolean);
+
 // CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(normalizeOrigin(origin))) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
